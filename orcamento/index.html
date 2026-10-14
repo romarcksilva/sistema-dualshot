@@ -19,9 +19,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <style>
     html, body { margin: 0; height: 100%; background: #292929; overflow: hidden; }
-    iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #292929; }
-    #carregando { position: fixed; inset: 0; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center;
-      color: #E4E2DD; font: 600 13px/1.4 Arial, sans-serif; letter-spacing: 3px; transition: opacity .35s ease; }
+    iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #292929; z-index: 1; }
+    #carregando { position: fixed; inset: 0; z-index: 2; background: #292929; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center;
+      color: #E4E2DD; font: 600 13px/1.4 Arial, sans-serif; letter-spacing: 3px; transition: opacity .4s ease; }
     #carregando .logo-img { width: min(260px, 62vw); height: auto; animation: surge .6s ease both; }
     @keyframes surge { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
     #carregando .barra { width: 120px; height: 3px; border-radius: 3px; background: #333; overflow: hidden; }
@@ -47,8 +47,10 @@
       f.setAttribute('allow', 'clipboard-read; clipboard-write; fullscreen');
       function mostrar() {
         if (mostrado) return; mostrado = true;
-        f.style.visibility = 'visible';
-        var c = document.getElementById('carregando'); c.style.opacity = '0'; setTimeout(function () { c.style.display = 'none'; }, 400);
+        f.style.visibility = 'visible';   // o sistema aparece por baixo da logo…
+        setTimeout(function () {          // …e a logo sai devagar por cima, sem tela vazia no meio
+          var c = document.getElementById('carregando'); c.style.opacity = '0'; setTimeout(function () { c.style.display = 'none'; }, 450);
+        }, 150);
       }
       window.addEventListener('message', function (ev) {
         if (ev.data === 'ds-pronto' && /(^|\.)(script\.google\.com|googleusercontent\.com)$/.test(new URL(ev.origin).hostname)) mostrar();
