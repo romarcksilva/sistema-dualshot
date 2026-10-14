@@ -1,0 +1,12 @@
+SITE DO PORTAL (GITHUB PAGES) · sem a faixa azul do Google
+
+Arquivos:
+  config.js            ← cole aqui o link /exec da implantação (único arquivo para editar)
+  index.html           ← portal do cliente:  https://portal.dualshot.com.br/?id=...
+  orcamento/index.html ← orçamento:          https://portal.dualshot.com.br/orcamento/
+  painel/index.html    ← painel:             https://portal.dualshot.com.br/painel/
+  CNAME                ← o seu subdomínio (troque se escolher outro nome)
+  404.html             ← endereço errado vai para o orçamento
+
+Depois de publicar, no painel: Ajustes › Sistema › Endereço do portal ›
+"Endereço próprio" = https://portal.dualshot.com.br  e  Salvar ajustes.
