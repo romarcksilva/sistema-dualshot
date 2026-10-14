@@ -42,10 +42,18 @@
       // Com ?id=... abre o portal do cliente; sem id, abre o painel (login da equipe).
       var destino = params.get('id') ? exec + '?' + params.toString() : exec + '?admin=true';
       if (!params.get('id')) document.title = 'Painel • DualShot Fotografia';
-      var f = document.createElement('iframe');
-      f.src = destino; f.title = document.title;
+      var f = document.createElement('iframe'), mostrado = false;
+      f.src = destino; f.title = document.title; f.style.visibility = 'hidden';   // fica escondido até o sistema avisar que está pronto
       f.setAttribute('allow', 'clipboard-read; clipboard-write; fullscreen');
-      f.addEventListener('load', function () { var c = document.getElementById('carregando'); c.style.opacity = '0'; setTimeout(function () { c.style.display = 'none'; }, 400); });
+      function mostrar() {
+        if (mostrado) return; mostrado = true;
+        f.style.visibility = 'visible';
+        var c = document.getElementById('carregando'); c.style.opacity = '0'; setTimeout(function () { c.style.display = 'none'; }, 400);
+      }
+      window.addEventListener('message', function (ev) {
+        if (ev.data === 'ds-pronto' && /(^|\.)(script\.google\.com|googleusercontent\.com)$/.test(new URL(ev.origin).hostname)) mostrar();
+      });
+      f.addEventListener('load', function () { setTimeout(mostrar, 8000); });   // garantia: nunca fica preso no carregamento
       document.body.appendChild(f);
       setTimeout(function () { var c = document.getElementById('carregando'); if (c.style.display !== 'none') c.style.opacity = '.6'; }, 12000);
     })();
