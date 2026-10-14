@@ -3,20 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#1f1f1f">
+  <meta name="theme-color" content="#292929">
   <title>Solicite seu orçamento • DualShot Fotografia</title>
   <meta name="description" content="Casamentos, ensaios e eventos. Peça seu orçamento em poucos minutos.">
   <meta property="og:title" content="Solicite seu orçamento • DualShot Fotografia">
   <meta property="og:description" content="Casamentos, ensaios e eventos. Peça seu orçamento em poucos minutos.">
   <meta property="og:type" content="website">
   <meta name="robots" content="noindex">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23292929'/%3E%3Ctext x='50' y='66' font-size='52' text-anchor='middle' fill='%23D71D26' font-family='Arial' font-weight='bold'%3ED%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta property="og:image" content="https://portal.dualshot.com.br/og.jpg">
+  <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <style>
-    html, body { margin: 0; height: 100%; background: #1f1f1f; overflow: hidden; }
-    iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #1f1f1f; }
+    html, body { margin: 0; height: 100%; background: #292929; overflow: hidden; }
+    iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #292929; }
     #carregando { position: fixed; inset: 0; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center;
       color: #E4E2DD; font: 600 13px/1.4 Arial, sans-serif; letter-spacing: 3px; transition: opacity .35s ease; }
-    #carregando .logo { font-size: 22px; letter-spacing: 4px; } #carregando .logo b { color: #D71D26; }
+    #carregando .logo-img { width: min(260px, 62vw); height: auto; animation: surge .6s ease both; }
+    @keyframes surge { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
     #carregando .barra { width: 120px; height: 3px; border-radius: 3px; background: #333; overflow: hidden; }
     #carregando .barra i { display: block; width: 40%; height: 100%; background: #D71D26; animation: vai 1.1s ease-in-out infinite; }
     @keyframes vai { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
@@ -24,7 +31,7 @@
   </style>
 </head>
 <body>
-  <div id="carregando"><div class="logo"><b>DUAL</b>SHOT</div><div class="barra"><i></i></div></div>
+  <div id="carregando"><img src="/logo.png" alt="DualShot Fotografia" class="logo-img"><div class="barra"><i></i></div></div>
   <div id="erro">Não foi possível carregar agora. Atualize a página ou fale com a DualShot pelo WhatsApp.</div>
   <script src="/config.js"></script>
   <script>
