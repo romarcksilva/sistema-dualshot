@@ -32,11 +32,28 @@
       border-radius: 14px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.45); font: 14px/1.4 Arial, sans-serif; align-items: center; gap: 12px; max-width: calc(100% - 24px); }
     #ds-notif button { border: 0; border-radius: 10px; padding: 8px 14px; font-weight: 700; cursor: pointer; }
     #ds-notif .sim { background: #D71D26; color: #fff; } #ds-notif .nao { background: transparent; color: #A9A59E; }
+    #ds-ajuda { display: none; position: fixed; inset: 0; z-index: 3; align-items: center; justify-content: center; padding: 24px; background: #292929; }
+    #ds-ajuda .caixa { max-width: 440px; width: 100%; background: #333; border: 1px solid #454442; border-radius: 16px; padding: 24px; color: #E4E2DD; font: 14px/1.55 Arial, sans-serif; box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+    #ds-ajuda h1 { font-size: 18px; margin: 0 0 8px; color: #fff; } #ds-ajuda p { margin: 0 0 12px; color: #C9C6BF; }
+    #ds-ajuda ol { margin: 0 0 16px; padding-left: 20px; color: #C9C6BF; } #ds-ajuda li { margin-bottom: 6px; }
+    #ds-ajuda .botoes { display: flex; flex-wrap: wrap; gap: 8px; }
+    #ds-ajuda button, #ds-ajuda a { border: 0; border-radius: 10px; padding: 10px 14px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none; }
+    #ds-ajuda .p { background: #D71D26; color: #fff; } #ds-ajuda .s { background: #292929; color: #E4E2DD; border: 1px solid #5E5C58; }
   </style>
 </head>
 <body>
   <div id="carregando"><img src="/logo.png" alt="DualShot Fotografia" class="logo-img"><div class="barra"><i></i></div></div>
   <div id="ds-notif"><span>Ativar as notificações de novos alertas neste aparelho?</span><button class="sim" type="button">Ativar notificações</button><button class="nao" type="button">Agora não</button></div>
+  <div id="ds-ajuda"><div class="caixa">
+    <h1>Não foi possível abrir agora</h1>
+    <p>Isso costuma acontecer quando há <b>mais de uma conta Google conectada</b> neste navegador (por exemplo, a pessoal e a do trabalho).</p>
+    <ol>
+      <li>Abra este endereço numa <b>janela anônima</b> (Ctrl+Shift+N no computador; no celular, "Nova guia anônima").</li>
+      <li>Ou saia das outras contas Google e deixe só uma conectada.</li>
+    </ol>
+    <div class="botoes"><button class="p" type="button" onclick="location.reload()">Tentar de novo</button>
+      <button class="s" type="button" id="ds-copiar">Copiar endereço</button><a class="s" id="ds-whats" target="_blank" rel="noopener" style="display:none">Falar no WhatsApp</a></div>
+  </div></div>
   <div id="erro">Não foi possível carregar agora. Atualize a página ou fale com a DualShot pelo WhatsApp.</div>
   <script src="/config.js"></script>
   <script>
@@ -65,7 +82,7 @@
       window.addEventListener('message', function (ev) {
         var deGoogle = false; try { deGoogle = /(^|\.)(script\.google\.com|googleusercontent\.com)$/.test(new URL(ev.origin).hostname); } catch (e) {}
         if (!deGoogle) return;
-        if (ev.data === 'ds-pronto') return mostrar();
+        if (ev.data === 'ds-pronto') { clearTimeout(vigia); return mostrar(); }
         var d = ev.data || {}; if (!d.ds) return;
         // notificações do painel (a página do site é quem pode mostrá-las)
         if (d.tipo === 'notif-consultar') return estadoNotif();
@@ -75,7 +92,18 @@
           n.onclick = function () { window.focus(); enviar(f.contentWindow, { ds: 1, tipo: 'abrir-alertas' }); n.close(); };
         }
       });
-      f.addEventListener('load', function () { setTimeout(mostrar, 8000); });   // garantia: nunca fica preso no carregamento
+      // Se o sistema não avisar que abriu (ex.: várias contas Google conectadas), mostra a ajuda em vez da página de erro do Google
+      function semResposta() {
+        if (!params.get('id')) return mostrar();   // painel: mantém o comportamento de antes
+        if (mostrado) return; mostrado = true;
+        document.getElementById('carregando').style.display = 'none';
+        var w = String(window.DUALSHOT_WHATS || '61981361087').replace(/\D/g, ''), aw = document.getElementById('ds-whats');
+        if (w) { aw.href = 'https://wa.me/55' + w + '?text=' + encodeURIComponent('Olá! Não estou conseguindo abrir o link: ' + location.href); aw.style.display = 'inline-block'; }
+        document.getElementById('ds-copiar').onclick = function () { try { navigator.clipboard.writeText(location.href); this.innerText = 'Endereço copiado ✓'; } catch (e) { prompt('Copie o endereço:', location.href); } };
+        document.getElementById('ds-ajuda').style.display = 'flex';
+      }
+      var vigia = setTimeout(semResposta, 20000);
+      f.addEventListener('load', function () { clearTimeout(vigia); vigia = setTimeout(semResposta, 9000); });
       document.body.appendChild(f);
       setTimeout(function () { var c = document.getElementById('carregando'); if (c.style.display !== 'none') c.style.opacity = '.6'; }, 12000);
     })();
