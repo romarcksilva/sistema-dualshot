@@ -62,8 +62,8 @@
       if (!/^https:\/\/script\.google\.com\/.+\/exec$/.test(exec)) { document.getElementById('carregando').style.display = 'none'; document.getElementById('erro').style.display = 'flex'; return; }
       var params = new URLSearchParams(location.search);
       // Com ?id=... abre o portal do cliente; sem id, abre o painel (login da equipe).
-      var destino = params.get('id') ? exec + '?' + params.toString() : exec + '?admin=true';
-      if (!params.get('id')) document.title = 'Painel • DualShot Fotografia';
+      var destino = (params.get('id') || params.has('verificar')) ? exec + '?' + params.toString() : exec + '?admin=true';
+      if (params.has('verificar')) document.title = 'Verificar documento • DualShot Fotografia'; else if (!params.get('id')) document.title = 'Painel • DualShot Fotografia';
       var f = document.createElement('iframe'), mostrado = false;
       f.src = destino; f.title = document.title; f.style.visibility = 'hidden';   // fica escondido até o sistema avisar que está pronto
       f.setAttribute('allow', 'clipboard-read; clipboard-write; fullscreen');
@@ -94,7 +94,7 @@
       });
       // Se o sistema não avisar que abriu (ex.: várias contas Google conectadas), mostra a ajuda em vez da página de erro do Google
       function semResposta() {
-        if (!params.get('id')) return mostrar();   // painel: mantém o comportamento de antes
+        if (!params.get('id') && !params.has('verificar')) return mostrar();   // painel: mantém o comportamento de antes
         if (mostrado) return; mostrado = true;
         document.getElementById('carregando').style.display = 'none';
         var w = String(window.DUALSHOT_WHATS || '61981361087').replace(/\D/g, ''), aw = document.getElementById('ds-whats');
